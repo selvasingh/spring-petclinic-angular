@@ -1,7 +1,6 @@
 
 FROM node:16-alpine as build
 
-
 COPY . /workspace/
 
 ARG NPM_REGISTRY=" https://registry.npmjs.org"
@@ -12,7 +11,6 @@ RUN echo "registry = \"$NPM_REGISTRY\"" > /workspace/.npmrc                     
     npm run build
 
 FROM nginx:1.17.6 AS runtime
-
 
 COPY  --from=build /workspace/dist/ /usr/share/nginx/html/
 
