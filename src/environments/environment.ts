@@ -23,5 +23,10 @@
 
 export const environment = {
   production: false,
-  REST_API_URL: 'http://localhost:9966/petclinic/api/'
+    /*
+    Replace <spring-petclinic-rest-endpoint> with the --assigned-endpoint of the app 
+    deployed in Azure Spring Cloud or any backend.
+  */
+
+  REST_API_URL: '<spring-petclinic-rest-endpoint>/petclinic/api/'
 };
