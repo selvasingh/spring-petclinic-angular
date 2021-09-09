@@ -9,6 +9,12 @@ Warning: **client only**.
 2) Copy the Assigned end point and modify the code in **environment.ts** and **environment.prod.ts** for production deploy.
 
 ### Build
+```
+git clone https://github.com/selvasingh/spring-petclinic-angular.git
+cd spring-petclinic-angular
+git checkout azure
+ng build 
+```
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
