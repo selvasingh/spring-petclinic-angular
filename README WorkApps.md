@@ -10,6 +10,13 @@ Warning: **client only**.
 
 ### Build
 
+```
+git clone https://github.com/selvasingh/spring-petclinic-angular.git
+cd spring-petclinic-angular
+git checkout Azure
+ng build 
+```
+
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
 
 You can also build the application in a dedicated docker image using the provided `Dockerfile` as follows:
