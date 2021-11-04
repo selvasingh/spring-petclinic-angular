@@ -89,16 +89,6 @@ In the Azure Portal under **Subscriptions**, go to the subscription that you wil
 
 ![Register Microsoft.Web resource provider](./microsoft-web-rp.png)
 
-### Enable Custom Endpoint
-
-For time being, to enable using ARM templates with Azure Container Apps, we need to enable a Custom Endpoint in Brazil US ARM region. This step will not be needed once ARM changes are available in other regions.
-
-```
-az cloud register -n CloudWithCustomEndpoint --endpoint-active-directory https://login.microsoftonline.com/ --endpoint-active-directory-graph-resource-id https://graph.windows.net/ --endpoint-gallery https://gallery.azure.com --endpoint-management https://management.core.windows.net --endpoint-resource-manager https://brazilus.management.azure.com --suffix-storage-endpoint core.windows.net
- 
-az cloud set --name CloudWithCustomEndpoint
-```
-
 ### Define Resource Creation Parameters
 
 To follow along with the Azure CLI commands in this quick start guide, set the following  environment variables in your terminal:
