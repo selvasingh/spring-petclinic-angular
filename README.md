@@ -10,7 +10,7 @@ Warning: **client only**.
 
 ### Build
 ```
-git clone https://github.com/bowen5/spring-petclinic-angular.git
+git clone https://github.com/selvasingh/spring-petclinic-angular.git
 cd spring-petclinic-angular
 git checkout azure
 ng build 
