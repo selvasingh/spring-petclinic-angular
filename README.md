@@ -64,7 +64,7 @@ After building and testing locally with the Dockerfile, you can now deploy the a
 
 Install the **Azure Spring Cloud extension**
 
-Before installing the Azure Container Apps CLI extension, please ensure that an older verison of the extension is not installed:
+Before installing the Azure Spring Cloud CLI extension, please ensure that an older verison of the extension is not installed:
 
 ```azurecli-interactive
 az extension remove -n spring-cloud
@@ -100,5 +100,7 @@ Deploy Spring Petclinic Angular application to Azure.
 ```azurecli-interactive
 az spring-cloud app deploy --name spring-petclinic-angular --container-image $REGISTRY/spring-petclinic-angular:latest
 ```
+
+And please check [Customize container for Azure Spring Cloud](https://github.com/LGDoor/azure-cli-extensions/blob/xiangy/byoc/src/spring-cloud/README_CONTAINER.md) for the full CLI commands list.
 
 Congratulations! You've successfully deployed Spring Petclinic Angular to Azure Spring Cloud.
