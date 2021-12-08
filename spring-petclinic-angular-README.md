@@ -56,7 +56,7 @@ docker build -t spring-petclinic-angular:latest .
 Then you will be able to use it as follows:
 
 ```
-docker run --rm -p 8080:8080 spring-petclinic-angular:latest
+docker run --rm -p 1025:1025 spring-petclinic-angular:latest
 ```
 
 ## Documentation

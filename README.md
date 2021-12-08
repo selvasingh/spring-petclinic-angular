@@ -1,16 +1,16 @@
-# Deploying Spring Petclinic Angular on Azure Container Apps
+# Deploying Spring Petclinic Angular on Azure Spring Cloud
 
-## Angular frontend for Spring Petclinic on Azure Container Apps
+## Angular frontend for Spring Petclinic on Azure Spring Cloud
 
 
 Warning: **client only**. 
-  Use REST API from backend deployed on Azure Spring Cloud [spring-petclinic-rest project](https://github.com/selvasingh/spring-petclinic-rest/blob/azure/README-Azure-Spring-Cloud.md). Following steps need to be done before deploying this project 
+  Use REST API from backend deployed on Azure Spring Cloud [spring-petclinic-rest project](https://github.com/selvasingh/spring-petclinic-rest/blob/azure/README.md). Following steps need to be done before deploying this project 
 1) You need to deploy Spring petclinic rest project on Azure Spring Cloud and assign a public end point. 
 2) Copy the Assigned end point and modify the code in **environment.ts** and **environment.prod.ts** for production deploy.
 
 ### Build
 ```
-git clone https://github.com/selvasingh/spring-petclinic-angular.git
+git clone https://github.com/bowen5/spring-petclinic-angular.git
 cd spring-petclinic-angular
 git checkout azure
 ng build 
@@ -27,7 +27,7 @@ docker build -t spring-petclinic-angular:latest .
 Then you will be able to use it as follows:
 
 ```
-docker run --rm -p 8080:8080 spring-petclinic-angular:latest
+docker run --rm -p 1025:1025 spring-petclinic-angular:latest
 ```
 After running the docker client locally the application should be able to hit the exposed rest end point of the Spring Petclinic Rest project
  
@@ -51,11 +51,9 @@ docker tag spring-petclinic-angular $REGISTRY/spring-petclinic-angular:latest
 docker push $REGISTRY/spring-petclinic-angular:latest
 ```
 
-Deploy to Azure Container Apps
-After building and testing locally with the Dockerfile, you can now deploy the application to Azure Container Apps service. Following are the steps needed to deploy to container apps.
- 
-### Create Container Apps Environment
-### Prerequisites
+## Deploy to Azure Spring Cloud
+
+After building and testing locally with the Dockerfile, you can now deploy the application to Azure Spring Cloud service. Following are the steps needed to deploy to Azure Spring Cloud.
 
 ### Install the CLI and extensions
  [Install](https://docs.microsoft.com/cli/azure/install-azure-cli) the Azure CLI to run CLI reference commands. 
@@ -64,95 +62,45 @@ After building and testing locally with the Dockerfile, you can now deploy the a
 
  - Run [az version](https://docs.microsoft.com/cli/azure/reference-index?#az_version) to find the version and dependent libraries that are installed. To upgrade to the latest version, run [az upgrade](https://docs.microsoft.com/cli/azure/reference-index?#az_upgrade).
 
-Install the **Azure Container Apps extension**
+Install the **Azure Spring Cloud extension**
 
-Before installing the Azure Container Apps CLI extension, please ensure that an older verison of the extension is not installed:
+Before installing the Azure Spring Cloud CLI extension, please ensure that an older verison of the extension is not installed:
 
 ```azurecli-interactive
-az extension remove -n workerapp
-az extension remove -n containerapp
+az extension remove -n spring-cloud
 ```
 
 Install the latest version of the extension with the following command:
 
 ```azurecli-interactive
-az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.1.13-py2.py3-none-any.whl
+az extension add --source https://ascprivatecli.blob.core.windows.net/cli-extension/spring_cloud-2.11.2_container-py3-none-any.whl
 ```
 
 For more information about extensions, see [Use extensions with the Azure CLI](https://docs.microsoft.com/cli/azure/azure-cli-extensions-overview).
 
-### Register the Microsoft.Web Resource Provider
+ 
+### Create Azure Spring Cloud service instance
 
-Ensure that your subscription has the Microsoft.Web resource provider registered. If you've used Azure App Service or Azure Funtions in the past, then you already have Microsoft.Web registered. 
+Follow [Create Azure Spring Cloud service instance](https://github.com/selvasingh/spring-petclinic-rest/blob/azure/README.md#create-azure-spring-cloud-service-instance) to create an Azure Spring Cloud service instance.
 
-In the Azure Portal under **Subscriptions**, go to the subscription that you will use to deploy Azure Container Apps. In the Settings section, go to **Resource Providers** and ensure the `Microsoft.Web` resource provider is registered
+### Create microservice applications
 
-![Register Microsoft.Web resource provider](./microsoft-web-rp.png)
-
-### Define Resource Creation Parameters
-
-To follow along with the Azure CLI commands in this quick start guide, set the following  environment variables in your terminal:
-
-```
-export RESOURCE_GROUP_NAME=container-apps-rg # All the resources would be deployed in this resource group
-export RESOURCE_GROUP_LOCATION="eastus" # The resource group would be created in this location
-export LOG_ANALYTICS_WORKSPACE_NAME="containerappslogs" # Workspace to export application logs
-export WORKERAPPS_ENVIRONMENT_NAME="containerappsenvironment" # Name of the Container Apps Environment
-```
-
-### Create a resource group
-
-Azure Container Apps, like all Azure resources, must be deployed into a resource group. Resource groups allow you to organize and manage related Azure resources.
-First, create a resource group as defined in the resource parameters above with the following [az group create](https://docs.microsoft.com/cli/azure/group?view=azure-cli-latest#az_group_create) command:
-```azurecli-interactive
-az group create --name $RESOURCE_GROUP_NAME --location "$RESOURCE_GROUP_LOCATION"
-```
-
-### Set up your environment
-
-Azure Container Apps uses Log Analytics for application logs. If you have a Log Analytics workspace already, you'll need the workspace ID and key. If you don't have a Log Analytics workspace, you can create one by running the following command: 
+Create a microservice app.
 
 ```azurecli-interactive
-az monitor log-analytics workspace create -g $RESOURCE_GROUP_NAME -n $LOG_ANALYTICS_WORKSPACE_NAME
+az spring-cloud app create --name spring-petclinic-angular --instance-count 1 --assign-endpoint true
 ```
 
-You can retrieve the Log Anaytics Client Id and Client Secret using:
-```bash
-export LOG_ANALYTICS_WORKSPACE_CLIENT_ID=`az monitor log-analytics workspace show --query customerId -g $RESOURCE_GROUP_NAME -n $LOG_ANALYTICS_WORKSPACE_NAME | tr -d '"'`
-export LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET=`az monitor log-analytics workspace get-shared-keys --query primarySharedKey -g $RESOURCE_GROUP_NAME -n $LOG_ANALYTICS_WORKSPACE_NAME | tr -d '"'`
-```
+### Deploy Spring Petclinic Angular application
 
-For more information on creating and configuring a Log Analytics workspace, see [Create a Log Analytics workspace with Azure CLI 2.0](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace-cli)
+Deploy Spring Petclinic Angular application to Azure. 
 
-
-## Create a Container App Environment
-
-Azure Container Apps must be deployed into a Container App Environment. You can deploy multiple Container Apps into an environment. The environment represents a boundary for your applications. Applications deployed to the same environment share a VNET and write logs to the same Log Analytics workspace.
-
-To create the environment, run the following command: 
+**Important Note: Application must expose 1025 port for Azure Spring Cloud health probing. Check [How does Azure Spring Cloud monitor the health status of my application?](https://docs.microsoft.com/en-us/azure/spring-cloud/faq?pivots=programming-language-java#how-does-azure-spring-cloud-monitor-the-health-status-of-my-application) for details.**
 
 ```azurecli-interactive
-az containerapp env create -n $WORKERAPPS_ENVIRONMENT_NAME -g $RESOURCE_GROUP_NAME --logs-workspace-id $LOG_ANALYTICS_WORKSPACE_CLIENT_ID --logs-workspace-key $LOG_ANALYTICS_WORKSPACE_CLIENT_SECRET --location "Central US EUAP"
+az spring-cloud app deploy --name spring-petclinic-angular --container-image $REGISTRY/spring-petclinic-angular:latest
 ```
 
-## Create a Container App
+And please check [Customize container for Azure Spring Cloud](https://github.com/LGDoor/azure-cli-extensions/blob/xiangy/byoc/src/spring-cloud/README_CONTAINER.md) for the full CLI commands list.
 
-Now that you have an environment created, you can start deploying Container Apps to it. To create a Container App with the Azure CLI, provide the environment name, an application name, and a container image to the [az workerapp create] command. In this example, we will use spring-petclinic-angular:latest that we built above. 
-
-You can expose your Container Apps to the internet by specifying the `--ingress` option.
-
-```azurecli-interactive
-az containerapp create --name petclinic --resource-group $RESOURCE_GROUP_NAME --environment $WORKERAPPS_ENVIRONMENT_NAME --image $REGISTRY/spring-petclinic-angular:latest --target-port 8080 --ingress 'external'
-```
-
-Within a few seconds, you should get a response from the Azure CLI indicating that the deployment has completed with application's FQDN.
-
-Alternatively, you can check the application's fully qualified domain name (FQDN) and its provisioning state using the `az workerapp show` command:
-
-```azurecli-interactive
-az containerapp show --resource-group $RESOURCE_GROUP_NAME --name myApp --query "{FQDN:configuration.ingress.fqdn,ProvisioningState:provisioningState}" --out table
-```
-
-Browse the application's FQDN in your browser and you should see the Spring Petclinic Angular frontend. 
-
-Congratulations! You've successfully deployed a Container App to Azure. Container Apps can automatically scale out to handle the received requests, then scales in when demand decreases.
+Congratulations! You've successfully deployed Spring Petclinic Angular to Azure Spring Cloud.
