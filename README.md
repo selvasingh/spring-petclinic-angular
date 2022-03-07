@@ -73,7 +73,7 @@ az extension remove -n spring-cloud
 Install the latest version of the extension with the following command:
 
 ```azurecli-interactive
-az extension add --source https://ascprivatecli.blob.core.windows.net/cli-extension/spring_cloud-2.11.2_container-py3-none-any.whl
+az extension add -n spring-cloud
 ```
 
 For more information about extensions, see [Use extensions with the Azure CLI](https://docs.microsoft.com/cli/azure/azure-cli-extensions-overview).
