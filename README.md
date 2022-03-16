@@ -98,7 +98,12 @@ Deploy Spring Petclinic Angular application to Azure.
 **Important Note: Application must expose 1025 port for Azure Spring Cloud health probing. Check [How does Azure Spring Cloud monitor the health status of my application?](https://docs.microsoft.com/en-us/azure/spring-cloud/faq?pivots=programming-language-java#how-does-azure-spring-cloud-monitor-the-health-status-of-my-application) for details.**
 
 ```azurecli-interactive
-az spring-cloud app deploy --name spring-petclinic-angular --container-image $REGISTRY/spring-petclinic-angular:latest
+az spring-cloud app deploy --name spring-petclinic-angular --container-image spring-petclinic-angular:latest --container-registry $REGISTRY
+```
+
+or (for the private registry)
+```azurecli-interactive
+az spring-cloud app deploy --name spring-petclinic-angular --container-image spring-petclinic-angular:latest --container-registry $REGISTRY --registry-username $USERNAME --registry-password $PASSWORD
 ```
 
 And please check [Customize container for Azure Spring Cloud](https://github.com/LGDoor/azure-cli-extensions/blob/xiangy/byoc/src/spring-cloud/README_CONTAINER.md) for the full CLI commands list.
